@@ -27,7 +27,7 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            minifyEnabled enableProguardInReleaseBuilds
+            minifyEnabled enableProguardInReleaseBuilds.toBoolean()
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }

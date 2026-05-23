@@ -26,6 +26,16 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      # ✅ CORRECTION : Télécharge gradlew s'il manque
+      - name: Download Gradle Wrapper Script
+        run: |
+          if [ ! -f android/gradlew ]; then
+            echo "Downloading gradlew..."
+            curl -L https://raw.githubusercontent.com/gradle/gradle/master/gradlew -o android/gradlew
+            chmod +x android/gradlew
+            echo "Gradle wrapper downloaded successfully."
+          fi
       
       - name: Build Debug APK
         run: cd android && ./gradlew assembleDebug

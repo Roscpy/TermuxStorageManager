@@ -1,4 +1,7 @@
 {
   "name": "TermuxStorageManager",
-  "displayName": "Emu TSM"
+  "displayName": "Emu TSM",
+  "android": {
+    "package": "com.termuxstoragemanager"
+  }
 }

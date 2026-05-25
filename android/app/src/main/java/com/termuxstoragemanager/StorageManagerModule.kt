@@ -15,7 +15,7 @@ class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContext
 
     @ReactMethod
     fun requestStorageAccess(promise: Promise) {
-        val activity = currentActivity ?: run {
+        val activity = reactApplicationContext.currentActivity ?: run {
             promise.reject("NO_ACTIVITY", "Activity null")
             return
         }

@@ -5,10 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.DocumentsContract
 import com.facebook.react.bridge.*
+import java.io.File
 
 class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
     private var treeUri: Uri? = null
+    private var pendingPromise: Promise? = null
     private val REQUEST_TREE = 1001
 
     override fun getName(): String = "StorageManager"
@@ -19,9 +21,9 @@ class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContext
             promise.reject("NO_ACTIVITY", "Activity null")
             return
         }
+        pendingPromise = promise
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         activity.startActivityForResult(intent, REQUEST_TREE)
-        promise.resolve(true)
     }
 
     @ReactMethod
@@ -44,8 +46,8 @@ class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContext
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
                 DocumentsContract.Document.COLUMN_SIZE,
-                DocumentsContract.Document.COLUMN_LAST_MODIFIED
-            )
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED            )
+
             val resolver = context.contentResolver
             val cursor = resolver.query(childrenUri, projection, null, null, null)
             val files = Arguments.createArray()
@@ -93,8 +95,8 @@ class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContext
                 context.startActivity(Intent.createChooser(intent, "Ouvrir avec"))
                 promise.resolve(true)
             } else {
-                promise.reject("NO_APP", "Aucune application trouvée")
-            }        } catch (e: Exception) {
+                promise.reject("NO_APP", "Aucune application trouvée")            }
+        } catch (e: Exception) {
             promise.reject("OPEN_ERROR", e.message)
         }
     }
@@ -117,9 +119,12 @@ class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContext
                     uri,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 )
+                pendingPromise?.resolve(uri.toString())
             }
-            return true
+        } else {
+            pendingPromise?.reject("CANCELLED", "Utilisateur a annulé")
         }
-        return false
+        pendingPromise = null
+        return true
     }
 }

@@ -18,8 +18,9 @@ jobs:
           node-version: '20.x'
           cache: 'npm'
       
+      # ✅ Changement important : npm install au lieu de npm ci
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
       
       - name: Setup JDK 17
         uses: actions/setup-java@v4
@@ -31,6 +32,14 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'
+      
+      # ✅ Vérification debug : Affiche le contenu de react-native.config.js
+      - name: Debug Config
+        run: |
+          echo "Contenu de react-native.config.js :"
+          cat react-native.config.js
+          echo "Contenu de app.json :"
+          cat app.json
       
       - name: Build Debug APK
         run: cd android && gradle assembleDebug

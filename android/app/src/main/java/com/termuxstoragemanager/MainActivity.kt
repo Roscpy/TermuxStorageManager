@@ -14,7 +14,7 @@ class MainActivity : ReactActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val storageModule = reactInstanceManager.currentReactContext?.getNativeModule(com.termuxstoragemanager.StorageManagerModule::class.java)
+        val storageModule = reactApplicationContext.currentReactContext?.getNativeModule(com.termuxstoragemanager.StorageManagerModule::class.java)
         storageModule?.handleActivityResult(requestCode, resultCode, data)
     }
 }

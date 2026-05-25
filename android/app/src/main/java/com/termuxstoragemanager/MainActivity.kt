@@ -24,7 +24,7 @@ class MainActivity : ReactActivity() {
             .currentReactContext
         reactContext
             ?.getNativeModule(StorageManagerModule::class.java)
-            ?.handleActivityResult(requestCode, resultCode, data)
+            ?.handleActivityResult(requestCode, resultCode, data?.data)
     }
 
     override fun createReactActivityDelegate(): ReactActivityDelegate {

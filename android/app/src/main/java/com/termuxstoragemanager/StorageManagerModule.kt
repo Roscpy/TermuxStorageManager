@@ -4,8 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.DocumentsContract
-import com.facebook.react.bridge.*
-import java.io.File
+import com.facebook.react.bridge.*import java.io.File
 
 class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
@@ -46,15 +45,15 @@ class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContext
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
                 DocumentsContract.Document.COLUMN_SIZE,
-                DocumentsContract.Document.COLUMN_LAST_MODIFIED            )
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED
+            )
 
             val resolver = context.contentResolver
             val cursor = resolver.query(childrenUri, projection, null, null, null)
             val files = Arguments.createArray()
 
             cursor?.use {
-                while (it.moveToNext()) {
-                    val name = it.getString(0) ?: continue
+                while (it.moveToNext()) {                    val name = it.getString(0) ?: continue
                     val mime = it.getString(1) ?: "application/octet-stream"
                     val size = it.getLong(2)
                     val modified = it.getLong(3)
@@ -95,15 +94,15 @@ class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContext
                 context.startActivity(Intent.createChooser(intent, "Ouvrir avec"))
                 promise.resolve(true)
             } else {
-                promise.reject("NO_APP", "Aucune application trouvée")            }
+                promise.reject("NO_APP", "Aucune application trouvée")
+            }
         } catch (e: Exception) {
             promise.reject("OPEN_ERROR", e.message)
         }
     }
 
     @ReactMethod
-    fun copyFile(fromUri: String, toDirUri: String, promise: Promise) {
-        promise.resolve(true)
+    fun copyFile(fromUri: String, toDirUri: String, promise: Promise) {        promise.resolve(true)
     }
 
     @ReactMethod
@@ -111,15 +110,15 @@ class StorageManagerModule(reactContext: ReactApplicationContext) : ReactContext
         promise.resolve(true)
     }
 
-    fun handleActivityResult(requestCode: Int, resultCode: Int, intent: Intent?): Boolean {
+    fun handleActivityResult(requestCode: Int, resultCode: Int, uri: Uri?): Boolean {
         if (requestCode == REQUEST_TREE && resultCode == Activity.RESULT_OK) {
-            intent?.data?.let { uri ->
-                treeUri = uri
+            uri?.let { selectedUri ->
+                treeUri = selectedUri
                 reactApplicationContext.contentResolver.takePersistableUriPermission(
-                    uri,
+                    selectedUri,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 )
-                pendingPromise?.resolve(uri.toString())
+                pendingPromise?.resolve(selectedUri.toString())
             }
         } else {
             pendingPromise?.reject("CANCELLED", "Utilisateur a annulé")

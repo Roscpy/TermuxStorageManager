@@ -1,20 +1,18 @@
 package com.termuxstoragemanager
 
-import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint
+import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 
 class MainActivity : ReactActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-            DefaultNewArchitectureEntryPoint.load()
-        }
-    }
+    override fun getMainComponentName(): String = "TermuxStorageManager"
+
+    override fun createReactActivityDelegate(): ReactActivityDelegate =
+        DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -24,14 +22,6 @@ class MainActivity : ReactActivity() {
             .currentReactContext
         reactContext
             ?.getNativeModule(StorageManagerModule::class.java)
-            ?.handleActivityResult(requestCode, resultCode, data?.data)
-    }
-
-    override fun createReactActivityDelegate(): ReactActivityDelegate {
-        return DefaultReactActivityDelegate(this, mainComponentName)
-    }
-
-    companion object {
-        const val mainComponentName = "TermuxStorageManager"
+            ?.handleActivityResult(requestCode, resultCode, data)
     }
 }

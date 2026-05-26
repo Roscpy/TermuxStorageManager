@@ -15,10 +15,14 @@ class MainActivity : ReactActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val reactContext = (application as com.facebook.react.ReactApplication)
-            .reactNativeHost
-            .reactInstanceManager
-            .currentReactContext
+        
+        val reactApplication = application as? com.facebook.react.ReactApplication
+        
+        val reactContext = reactApplication
+            ?.reactNativeHost
+            ?.reactInstanceManager
+            ?.currentReactContext
+
         reactContext
             ?.getNativeModule(StorageManagerModule::class.java)
             ?.handleActivityResult(requestCode, resultCode, data?.data)

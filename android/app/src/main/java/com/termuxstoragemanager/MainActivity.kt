@@ -24,7 +24,14 @@ class MainActivity : ReactActivity() {
             ?.currentReactContext
 
         reactContext
-            ?.getNativeModule(StorageManagerModule::class.java)
-            ?.handleActivityResult(requestCode, resultCode, data?.data)
+            ?.getNativeModule("StorageManagerModule")
+            ?.let { module ->
+                try {
+                    val method = module.javaClass.getMethod("handleActivityResult", Int::class.java, Int::class.java, Intent::class.java)
+                    method.invoke(module, requestCode, resultCode, data)
+                } catch (e: Exception) {
+                    // Évite le crash si la méthode ou les types ne correspondent pas
+                }
+            }
     }
 }
